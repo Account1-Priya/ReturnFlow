@@ -1,0 +1,471 @@
+{
+  "info": {
+    "_postman_id": "returnflow-api-collection-v1",
+    "name": "ReturnFlow API Automated Test Collection",
+    "description": "Comprehensive SDET Postman Collection testing all authentication, customer order eligibility, live refund calculation oracles, proof uploads, admin state machine workflows, and security boundaries.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01. Auth",
+      "item": [
+        {
+          "name": "Login as Admin (Save Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Token exists and user is ADMIN', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.token).to.be.a('string');",
+                  "    pm.expect(json.user.role).to.eql('ADMIN');",
+                  "    pm.environment.set('adminToken', json.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login as Customer Alice (Save Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Token exists and user is CUSTOMER', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.token).to.be.a('string');",
+                  "    pm.expect(json.user.role).to.eql('CUSTOMER');",
+                  "    pm.environment.set('customerToken', json.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login as Customer Bob (Save Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Bob token saved for IDOR checks', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.token).to.be.a('string');",
+                  "    pm.environment.set('bobToken', json.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{bobEmail}}\",\n  \"password\": \"{{bobPassword}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Authenticated Profile (GET /auth/me)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Returns authenticated user profile', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.user.email).to.eql('alice@example.com');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "Reject Missing Auth Token (Security)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401 UNAUTHORIZED', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "    pm.expect(pm.response.json().code).to.eql('UNAUTHORIZED');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Orders",
+      "item": [
+        {
+          "name": "List Customer Orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Orders array returned with pagination', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.orders).to.be.an('array');",
+                  "    pm.expect(json.orders.length).to.be.greaterThan(0);",
+                  "    const delivered = json.orders.find(o => o.status === 'DELIVERED');",
+                  "    if (delivered) {",
+                  "        pm.environment.set('testOrderId', delivered.id);",
+                  "        pm.environment.set('testOrderItemId', delivered.items[0].id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/orders?page=1&limit=5", "host": ["{{baseUrl}}"], "path": ["orders"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] }
+          }
+        },
+        {
+          "name": "Get Order Details with Eligibility Flags",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Order details contain items with eligibility info', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.order.items).to.be.an('array');",
+                  "    pm.expect(json.order.items[0]).to.have.property('isReturnEligible');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/orders/{{testOrderId}}", "host": ["{{baseUrl}}"], "path": ["orders", "{{testOrderId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Returns (Customer)",
+      "item": [
+        {
+          "name": "Preview Refund Calculation (POST /returns/preview)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Refund preview calculates 15% restocking fee on CHANGED_MIND', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.refundPreview).to.be.an('object');",
+                  "    pm.expect(json.refundPreview.totalRefundCents).to.be.greaterThan(0);",
+                  "    pm.expect(json.refundPreview.totalRestockingFeeCents).to.be.greaterThan(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": {{testOrderId}},\n  \"items\": [\n    {\n      \"orderItemId\": {{testOrderItemId}},\n      \"quantity\": 1\n    }\n  ],\n  \"reason\": \"CHANGED_MIND\",\n  \"comment\": \"Automated API test preview calculation\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/returns/preview", "host": ["{{baseUrl}}"], "path": ["returns", "preview"] }
+          }
+        },
+        {
+          "name": "Submit Return Request (POST /returns)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Return created with status SUBMITTED', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.returnRequest.status).to.eql('SUBMITTED');",
+                  "    pm.environment.set('activeReturnId', json.returnRequest.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "orderId", "value": "{{testOrderId}}", "type": "text" },
+                { "key": "items", "value": "[{\"orderItemId\": {{testOrderItemId}}, \"quantity\": 1}]", "type": "text" },
+                { "key": "reason", "value": "CHANGED_MIND", "type": "text" },
+                { "key": "comment", "value": "Submitting return via Postman test collection", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/returns", "host": ["{{baseUrl}}"], "path": ["returns"] }
+          }
+        },
+        {
+          "name": "Get Return Request Detail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Contains items and initial audit history row', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.returnRequest.id).to.eql(parseInt(pm.environment.get('activeReturnId')));",
+                  "    pm.expect(json.returnRequest.statusHistory.length).to.be.greaterThanOrEqual(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/returns/{{activeReturnId}}", "host": ["{{baseUrl}}"], "path": ["returns", "{{activeReturnId}}"] }
+          }
+        },
+        {
+          "name": "Cancel Return Request (POST /returns/:id/cancel)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Status transitioned to CANCELLED', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.returnRequest.status).to.eql('CANCELLED');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/returns/{{activeReturnId}}/cancel", "host": ["{{baseUrl}}"], "path": ["returns", "{{activeReturnId}}", "cancel"] }
+          }
+        },
+        {
+          "name": "IDOR Protection Check (Bob accessing Alice Return)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 403 FORBIDDEN', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "    pm.expect(pm.response.json().code).to.eql('FORBIDDEN');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{bobToken}}" }],
+            "url": { "raw": "{{baseUrl}}/returns/{{activeReturnId}}", "host": ["{{baseUrl}}"], "path": ["returns", "{{activeReturnId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. Admin Workflows",
+      "item": [
+        {
+          "name": "Get Dashboard Statistics (GET /admin/stats)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Stats object contains byStatus and totalRefundedCents', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.stats.totalReturns).to.be.a('number');",
+                  "    pm.expect(json.stats.byStatus).to.be.an('object');",
+                  "    pm.expect(json.stats.totalRefundedCents).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/stats", "host": ["{{baseUrl}}"], "path": ["admin", "stats"] }
+          }
+        },
+        {
+          "name": "List Returns Queue with Filter (GET /admin/returns)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Queue returns filtered array', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.returnRequests).to.be.an('array');",
+                  "    if (json.returnRequests.length > 0) {",
+                  "        pm.environment.set('adminTargetReturnId', json.returnRequests[0].id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/returns?status=SUBMITTED&limit=5", "host": ["{{baseUrl}}"], "path": ["admin", "returns"], "query": [{ "key": "status", "value": "SUBMITTED" }, { "key": "limit", "value": "5" }] }
+          }
+        },
+        {
+          "name": "Reject Missing Reason Returns 400 (POST /admin/returns/:id/reject)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "    pm.expect(pm.response.json().code).to.eql('VALIDATION_ERROR');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/admin/returns/999999/reject", "host": ["{{baseUrl}}"], "path": ["admin", "returns", "999999", "reject"] }
+          }
+        },
+        {
+          "name": "Customer Blocked from Admin Endpoint (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 403 FORBIDDEN', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "    pm.expect(pm.response.json().code).to.eql('FORBIDDEN');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/returns", "host": ["{{baseUrl}}"], "path": ["admin", "returns"] }
+          }
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,18 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "token",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE4LCJlbWFpbCI6ImFkbWluQHJldHVybmZsb3cuY29tIiwicm9sZSI6IkFETUlOIiwibmFtZSI6IkFkbWluIFVzZXIiLCJpYXQiOjE3OTQ1NDczOTIsImV4cCI6MTc5NDYzMzc5Mn0.pRGUJ0vhX1HEtVjpHk4uGsRKSBgpqa601v456zIL9lM"
+        },
+        {
+          "name": "user",
+          "value": "{\"id\":18,\"email\":\"admin@returnflow.com\",\"name\":\"Admin User\",\"role\":\"ADMIN\",\"createdAt\":\"2026-11-13T05:20:24.606Z\"}"
+        }
+      ]
+    }
+  ]
+}

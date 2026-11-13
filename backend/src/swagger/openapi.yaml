@@ -1,0 +1,427 @@
+openapi: 3.0.3
+info:
+  title: ReturnFlow API
+  description: realistic e-commerce returns and refund management system API with role-based access, financial rounding, and audit logging.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001
+    description: Local development server
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new customer
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, name]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: customer@example.com
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: password123
+                name:
+                  type: string
+                  example: Jane Doe
+      responses:
+        201:
+          description: Customer account registered
+        400:
+          description: Validation error or email already in use
+
+  /auth/login:
+    post:
+      summary: Login to obtain JWT access token
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@returnflow.com
+                password:
+                  type: string
+                  example: admin123
+      responses:
+        200:
+          description: Login successful
+        401:
+          description: Invalid email or password
+
+  /auth/me:
+    get:
+      summary: Get current authenticated user profile
+      tags: [Auth]
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Current user profile
+        401:
+          description: Unauthorized
+
+  /orders:
+    get:
+      summary: List authenticated customer orders
+      tags: [Orders]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+      responses:
+        200:
+          description: Paginated orders list
+
+  /orders/{id}:
+    get:
+      summary: Get order details and return eligibility
+      tags: [Orders]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Order details
+        403:
+          description: Forbidden (order belongs to another customer)
+        404:
+          description: Order not found
+
+  /returns/preview:
+    post:
+      summary: Preview refund calculation without database write
+      tags: [Returns]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orderId, items, reason]
+              properties:
+                orderId:
+                  type: integer
+                  example: 1
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [orderItemId, quantity]
+                    properties:
+                      orderItemId:
+                        type: integer
+                      quantity:
+                        type: integer
+                reason:
+                  type: string
+                  enum: [DEFECTIVE, DAMAGED_IN_TRANSIT, WRONG_ITEM, NOT_AS_DESCRIBED, CHANGED_MIND, OTHER]
+                comment:
+                  type: string
+      responses:
+        200:
+          description: Refund preview breakdown
+        400:
+          description: Ineligible return or validation error
+
+  /returns:
+    post:
+      summary: Submit a return request with optional proof images
+      tags: [Returns]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [orderId, items, reason]
+              properties:
+                orderId:
+                  type: integer
+                items:
+                  type: string
+                  description: JSON string of items array
+                  example: '[{"orderItemId": 1, "quantity": 1}]'
+                reason:
+                  type: string
+                  enum: [DEFECTIVE, DAMAGED_IN_TRANSIT, WRONG_ITEM, NOT_AS_DESCRIBED, CHANGED_MIND, OTHER]
+                comment:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        201:
+          description: Return request created
+        400:
+          description: Ineligible or validation error
+    get:
+      summary: List customer's submitted return requests
+      tags: [Returns]
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of return requests
+
+  /returns/{id}:
+    get:
+      summary: Get return request details, breakdown, and audit timeline
+      tags: [Returns]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Return request details
+        403:
+          description: Access denied
+        404:
+          description: Not found
+
+  /returns/{id}/cancel:
+    post:
+      summary: Cancel a return request before review
+      tags: [Returns]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Return request cancelled
+        409:
+          description: Invalid transition (return already reviewed or finalized)
+
+  /admin/stats:
+    get:
+      summary: Get admin dashboard statistics
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Summary statistics
+
+  /admin/returns:
+    get:
+      summary: List all returns with filtering and pagination
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+      responses:
+        200:
+          description: Filtered returns queue
+
+  /admin/returns/{id}/review:
+    patch:
+      summary: Move return request to UNDER_REVIEW
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Return marked under review
+        409:
+          description: Invalid state transition
+
+  /admin/returns/{id}/approve:
+    post:
+      summary: Approve return request
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Return approved
+        409:
+          description: Invalid state transition
+
+  /admin/returns/{id}/reject:
+    post:
+      summary: Reject return request with mandatory reason
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason:
+                  type: string
+                  example: Item damaged due to customer misuse.
+      responses:
+        200:
+          description: Return rejected
+        400:
+          description: Missing reason
+        409:
+          description: Invalid state transition
+
+  /admin/returns/{id}/refund:
+    post:
+      summary: Trigger or retry payment gateway refund
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forceFail:
+                  type: boolean
+                  default: false
+      responses:
+        200:
+          description: Refund processed successfully
+        422:
+          description: Payment gateway error / declined transaction
+        409:
+          description: Invalid state transition
+
+  /admin/returns/{id}/history:
+    get:
+      summary: Get full audit history of return status changes
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Status history audit log
+
+  /test/reset:
+    post:
+      summary: Reset test database baseline (non-production only)
+      tags: [Test Utility]
+      responses:
+        200:
+          description: Database reset and seeded
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [code, message, details]
+      properties:
+        code:
+          type: string
+          example: BAD_REQUEST
+        message:
+          type: string
+          example: Validation failed
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+              code:
+                type: string
+

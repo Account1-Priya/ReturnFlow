@@ -1,0 +1,18 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "token",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwibmFtZSI6IkFsaWNlIFNtaXRoIiwiaWF0IjoxNzk0NTQ3MzkxLCJleHAiOjE3OTQ2MzM3OTF9.1YD_TMh_n-EtyA-JxB6HdTGUgaFM2L7J5PZRuAvqroQ"
+        },
+        {
+          "name": "user",
+          "value": "{\"id\":20,\"email\":\"alice@example.com\",\"name\":\"Alice Smith\",\"role\":\"CUSTOMER\",\"createdAt\":\"2026-11-13T05:20:25.055Z\"}"
+        }
+      ]
+    }
+  ]
+}
