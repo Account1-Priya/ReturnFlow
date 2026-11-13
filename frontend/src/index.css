@@ -6,3 +6,76 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* Paint the root element too, so overscroll / rubber-banding and the area
+   behind a short page use the theme background instead of white. */
+html {
+  background-color: #f8fafc; /* slate-50 */
+}
+
+html.dark {
+  background-color: #0d1321; /* night-900 */
+}
+
+/* Smooth theme switching.
+   The transition is scoped to a class that ThemeContext adds only for the
+   duration of a toggle. Applying it permanently would slow down every hover
+   state and animate colors on first paint, which reads as a flash. */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 250ms ease,
+    fill 250ms ease,
+    stroke 250ms ease,
+    box-shadow 250ms ease !important;
+  transition-delay: 0ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition: none !important;
+  }
+}
+
+/* Placeholders: Tailwind's default is tuned for light surfaces. */
+.dark ::placeholder {
+  color: #8295b0; /* 4.6:1 on the input surface - slate-500 only reaches 3:1 */
+  opacity: 1;
+}
+
+/* Native widgets (scrollbars, date pickers, autofill) follow the theme. */
+.dark {
+  color-scheme: dark;
+}
+
+/* Scrollbars */
+.dark ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0d1321; /* night-900 */
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #2a3750; /* night-700 */
+  border-radius: 9999px;
+  border: 3px solid #0d1321;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #3c4c6b; /* night-600 */
+}
+
+/* Text selection */
+.dark ::selection {
+  background-color: rgba(14, 165, 233, 0.35); /* brand-500 */
+  color: #f1f5f9;
+}

@@ -37,20 +37,20 @@ export const RegisterPage: React.FC = () => {
             <RotateCcw className="w-6 h-6" />
           </div>
         </div>
-        <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
+        <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           Create Customer Account
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
+        <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-300">
           Start managing your orders and returns easily
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-sm border border-slate-200 sm:rounded-xl sm:px-10">
+        <div className="bg-white dark:bg-night-800 py-8 px-6 shadow-sm border border-slate-200 dark:border-night-700 sm:rounded-xl sm:px-10">
           {error && (
             <div
               data-testid="register-error-alert"
-              className="mb-6 p-3 rounded-lg bg-rose-50 border border-rose-200 flex items-start gap-2.5 text-sm text-rose-700"
+              className="mb-6 p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 flex items-start gap-2.5 text-sm text-rose-700 dark:text-rose-300"
             >
               <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <span>{error}</span>
@@ -61,7 +61,7 @@ export const RegisterPage: React.FC = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
               >
                 Full Name
               </label>
@@ -77,7 +77,7 @@ export const RegisterPage: React.FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Sarah Connor"
-                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-night-600 rounded-lg dark:bg-night-750 text-sm dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:focus:border-brand-400"
                 />
               </div>
             </div>
@@ -85,7 +85,7 @@ export const RegisterPage: React.FC = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
               >
                 Email Address
               </label>
@@ -101,7 +101,7 @@ export const RegisterPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="sarah@example.com"
-                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-night-600 rounded-lg dark:bg-night-750 text-sm dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:focus:border-brand-400"
                 />
               </div>
             </div>
@@ -109,7 +109,7 @@ export const RegisterPage: React.FC = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
               >
                 Password (min 6 chars)
               </label>
@@ -126,7 +126,7 @@ export const RegisterPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-night-600 rounded-lg dark:bg-night-750 text-sm dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:focus:border-brand-400"
                 />
               </div>
             </div>
@@ -135,18 +135,18 @@ export const RegisterPage: React.FC = () => {
               type="submit"
               data-testid="register-submit-btn"
               disabled={loading}
-              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50 transition-colors"
+              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-night-800 focus:ring-brand-500 disabled:opacity-50 transition-colors"
             >
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-slate-600">
+          <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
             Already have an account?{' '}
             <Link
               to="/login"
               data-testid="go-to-login-link"
-              className="font-medium text-brand-600 hover:text-brand-500"
+              className="font-medium text-brand-600 dark:text-brand-400 hover:text-brand-500 dark:hover:text-brand-400"
             >
               Sign in
             </Link>

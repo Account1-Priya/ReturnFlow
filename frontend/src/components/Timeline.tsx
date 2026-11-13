@@ -11,7 +11,7 @@ interface TimelineProps {
 export const Timeline: React.FC<TimelineProps> = ({ history }) => {
   if (!history || history.length === 0) {
     return (
-      <div className="p-4 text-center text-sm text-slate-500 bg-slate-50 rounded-lg">
+      <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-night-900 rounded-lg">
         No status history recorded yet.
       </div>
     );
@@ -29,17 +29,17 @@ export const Timeline: React.FC<TimelineProps> = ({ history }) => {
               <div className="relative pb-8">
                 {!isLast && (
                   <span
-                    className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200"
+                    className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-night-700"
                     aria-hidden="true"
                   />
                 )}
                 <div className="relative flex space-x-3 items-start">
                   <div>
                     <span
-                      className={`h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white ${
+                      className={`h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white dark:ring-night-800 ${
                         isStaff
                           ? 'bg-indigo-600 text-white'
-                          : 'bg-slate-700 text-white'
+                          : 'bg-slate-700 dark:bg-slate-600 text-white'
                       }`}
                     >
                       {isStaff ? (
@@ -53,10 +53,10 @@ export const Timeline: React.FC<TimelineProps> = ({ history }) => {
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         <StatusBadge status={item.toStatus} size="sm" />
-                        <span className="text-xs text-slate-500 font-medium">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                           by {item.changedBy?.name || 'System'}{' '}
                           {isStaff && (
-                            <span className="text-indigo-600 font-semibold">(Admin)</span>
+                            <span className="text-indigo-600 dark:text-indigo-400 font-semibold">(Admin)</span>
                           )}
                         </span>
                       </div>
@@ -65,7 +65,7 @@ export const Timeline: React.FC<TimelineProps> = ({ history }) => {
                       </time>
                     </div>
                     {item.note && (
-                      <div className="mt-2 text-sm text-slate-700 bg-slate-50 p-3 rounded-md border border-slate-100">
+                      <div className="mt-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-night-900 p-3 rounded-md border border-slate-100 dark:border-night-700">
                         {item.note}
                       </div>
                     )}

@@ -11,13 +11,13 @@ import {
   XCircle,
   Search,
   DollarSign,
-  Package,
   AlertCircle,
   Shield,
   CreditCard,
   User,
   ImageIcon,
 } from 'lucide-react';
+import { ProductImage } from '../../components/ProductImage';
 
 export const AdminDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -144,8 +144,8 @@ export const AdminDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div data-testid="admin-detail-loading" className="py-24 text-center">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-indigo-600"></div>
-        <p className="mt-3 text-sm text-slate-500">Loading return for review...</p>
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 dark:border-night-700 border-t-indigo-600"></div>
+        <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Loading return for review...</p>
       </div>
     );
   }
@@ -155,7 +155,7 @@ export const AdminDetailPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div
           data-testid="admin-detail-error"
-          className="p-6 rounded-xl bg-rose-50 border border-rose-200 text-rose-800"
+          className="p-6 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-200"
         >
           <div className="flex items-center gap-3 font-semibold text-base">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -165,7 +165,7 @@ export const AdminDetailPage: React.FC = () => {
           <div className="mt-4">
             <Link
               to="/admin/returns"
-              className="text-xs font-semibold text-rose-700 hover:text-rose-900"
+              className="text-xs font-semibold text-rose-700 dark:text-rose-300 hover:text-rose-900 dark:hover:text-rose-100"
             >
               &larr; Back to Returns Queue
             </Link>
@@ -183,12 +183,12 @@ export const AdminDetailPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-slate-200 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-slate-200 dark:border-night-700 gap-4">
         <div className="flex items-center gap-3">
           <Link
             to="/admin/returns"
             data-testid="admin-back-btn"
-            className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-night-750 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
@@ -196,13 +196,13 @@ export const AdminDetailPage: React.FC = () => {
             <div className="flex items-center gap-3">
               <h1
                 data-testid="admin-return-title"
-                className="text-2xl font-bold tracking-tight text-slate-900"
+                className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100"
               >
                 Review Return #{returnReq.id}
               </h1>
               <StatusBadge status={returnReq.status} />
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Customer: <strong>{returnReq.customer?.name}</strong> (
               {returnReq.customer?.email}) • Order #{returnReq.orderId}
             </p>
@@ -252,15 +252,15 @@ export const AdminDetailPage: React.FC = () => {
           {/* Transition: APPROVED / REFUND_FAILED -> Process Refund */}
           {(returnReq.status === 'APPROVED' || returnReq.status === 'REFUND_FAILED') && (
             <div className="flex items-center gap-3">
-              <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer bg-slate-100 px-2 py-1.5 rounded-lg border border-slate-200">
+              <label className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 cursor-pointer bg-slate-100 dark:bg-night-750 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-night-700">
                 <input
                   type="checkbox"
                   data-testid="simulate-gateway-fail-toggle"
                   checked={simulateGatewayFail}
                   onChange={(e) => setSimulateGatewayFail(e.target.checked)}
-                  className="rounded border-slate-300 text-rose-600 focus:ring-rose-500"
+                  className="rounded border-slate-300 dark:border-night-600 text-rose-600 dark:text-rose-400 focus:ring-rose-500"
                 />
-                <span className="text-[11px] font-semibold text-rose-700">
+                <span className="text-[11px] font-semibold text-rose-700 dark:text-rose-300">
                   Simulate Gateway Fail (QA)
                 </span>
               </label>
@@ -282,9 +282,9 @@ export const AdminDetailPage: React.FC = () => {
       {actionSuccessMessage && (
         <div
           data-testid="admin-action-success"
-          className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-center gap-2"
+          className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-emerald-800 dark:text-emerald-200 text-xs font-medium flex items-center gap-2"
         >
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
           <span>{actionSuccessMessage}</span>
         </div>
       )}
@@ -294,56 +294,58 @@ export const AdminDetailPage: React.FC = () => {
         {/* Left 2 Cols */}
         <div className="lg:col-span-2 space-y-6">
           {/* Items & Math Breakdown */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
+          <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm overflow-hidden">
+            <div className="p-5 border-b border-slate-100 dark:border-night-700 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
                 Claimed Return Items ({returnReq.returnItems.length})
               </h2>
-              <span className="text-xs font-semibold text-slate-700">
+              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Reason: {returnReq.reason}
               </span>
             </div>
 
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-night-700">
               {returnReq.returnItems.map((item) => (
                 <div key={item.id} className="p-5 space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500">
-                        <Package className="w-4 h-4" />
-                      </div>
+                      <ProductImage
+                        product={item.orderItem?.product}
+                        fallbackLabel={`Item #${item.orderItemId}`}
+                        size="sm"
+                      />
                       <div>
-                        <div className="text-sm font-semibold text-slate-900">
+                        <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                           {item.orderItem?.product.name}
                         </div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-xs text-slate-500 dark:text-slate-400">
                           Qty: {item.quantityReturned} • SKU: {item.orderItem?.product.sku}
                         </div>
                       </div>
                     </div>
 
-                    <div className="text-sm font-bold text-slate-900">
+                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">
                       {formatCents(item.totalRefundCents)}
                     </div>
                   </div>
 
                   {/* Math Breakdown Box */}
-                  <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-600 grid grid-cols-2 sm:grid-cols-4 gap-2 border border-slate-100">
+                  <div className="bg-slate-50 dark:bg-night-900 rounded-lg p-3 text-xs text-slate-600 dark:text-slate-300 grid grid-cols-2 sm:grid-cols-4 gap-2 border border-slate-100 dark:border-night-700">
                     <div>
                       <span className="text-slate-400 block text-[11px]">Net Item Refund</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="font-semibold text-slate-900 dark:text-slate-100">
                         {formatCents(item.itemRefundCents)}
                       </span>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[11px]">Tax Proportional</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="font-semibold text-slate-900 dark:text-slate-100">
                         +{formatCents(item.taxRefundCents)}
                       </span>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[11px]">Restocking Fee</span>
-                      <span className="font-semibold text-rose-600">
+                      <span className="font-semibold text-rose-600 dark:text-rose-400">
                         {item.restockingFeeCents > 0
                           ? `-${formatCents(item.restockingFeeCents)}`
                           : '$0.00'}
@@ -351,7 +353,7 @@ export const AdminDetailPage: React.FC = () => {
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[11px]">Shipping Pro-rata</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="font-semibold text-slate-900 dark:text-slate-100">
                         {item.shippingRefundCents > 0
                           ? `+${formatCents(item.shippingRefundCents)}`
                           : '$0.00'}
@@ -364,8 +366,8 @@ export const AdminDetailPage: React.FC = () => {
           </div>
 
           {/* Proof Evidence Photos */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+          <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm p-5">
+            <h3 className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 dark:border-night-700 flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-slate-400" />
               Attached Proof Evidence ({returnReq.images?.length || 0})
             </h3>
@@ -378,7 +380,7 @@ export const AdminDetailPage: React.FC = () => {
                 {returnReq.images.map((img) => (
                   <div
                     key={img.id}
-                    className="relative group rounded-lg overflow-hidden border border-slate-200 aspect-square bg-slate-100"
+                    className="relative group rounded-lg overflow-hidden border border-slate-200 dark:border-night-700 aspect-square bg-slate-100 dark:bg-night-750"
                   >
                     <img
                       src={`/${img.filePath}`}
@@ -400,11 +402,11 @@ export const AdminDetailPage: React.FC = () => {
 
           {/* Customer Comment */}
           {returnReq.comment && (
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+            <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm p-5">
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
                 Customer Explanation
               </div>
-              <p className="text-sm text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100">
+              <p className="text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-night-900 p-3 rounded-lg border border-slate-100 dark:border-night-700">
                 {returnReq.comment}
               </p>
             </div>
@@ -414,16 +416,16 @@ export const AdminDetailPage: React.FC = () => {
         {/* Right Col */}
         <div className="space-y-6">
           {/* Financial Summary */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100 text-xs font-semibold text-slate-700 uppercase tracking-wider">
-              <DollarSign className="w-4 h-4 text-emerald-600" />
+          <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm p-5">
+            <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-night-700 text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+              <DollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               Refund Settlement Total
             </div>
             <div className="pt-4 flex items-baseline justify-between">
-              <span className="text-xs text-slate-500">Gross Refund Amount:</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Gross Refund Amount:</span>
               <span
                 data-testid="admin-total-refund-val"
-                className="text-2xl font-bold text-emerald-600"
+                className="text-2xl font-bold text-emerald-600 dark:text-emerald-400"
               >
                 {formatCents(totalRefund)}
               </span>
@@ -431,8 +433,8 @@ export const AdminDetailPage: React.FC = () => {
           </div>
 
           {/* Audit Timeline */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">
+          <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm p-5">
+            <h3 className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 dark:border-night-700">
               Audit History Trail
             </h3>
             <Timeline history={returnReq.statusHistory || []} />
@@ -451,7 +453,7 @@ export const AdminDetailPage: React.FC = () => {
           <div>
             <label
               htmlFor="rejectionReason"
-              className="block text-xs font-semibold text-slate-700 uppercase"
+              className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase"
             >
               Rejection Reason *
             </label>
@@ -464,21 +466,21 @@ export const AdminDetailPage: React.FC = () => {
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="e.g. Serial number does not match item ordered; item shows signs of intentional damage..."
-              className="mt-1.5 block w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="mt-1.5 block w-full border border-slate-300 dark:border-night-600 rounded-lg dark:bg-night-750 p-2.5 text-sm dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
 
           {rejectError && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700">
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-lg text-xs text-rose-700 dark:text-rose-300">
               {rejectError}
             </div>
           )}
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-night-700">
             <button
               type="button"
               onClick={() => setRejectModalOpen(false)}
-              className="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+              className="px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-night-800 border border-slate-300 dark:border-night-600 rounded-lg hover:bg-slate-50 dark:hover:bg-night-900"
             >
               Cancel
             </button>

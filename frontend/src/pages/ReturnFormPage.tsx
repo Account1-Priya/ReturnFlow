@@ -13,6 +13,7 @@ import {
   DollarSign,
   PackageCheck,
 } from 'lucide-react';
+import { ProductImage } from '../components/ProductImage';
 
 interface SelectedItemState {
   orderItemId: number;
@@ -204,8 +205,8 @@ export const ReturnFormPage: React.FC = () => {
   if (loadingOrder) {
     return (
       <div data-testid="return-form-loading" className="py-24 text-center">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-brand-600"></div>
-        <p className="mt-3 text-sm text-slate-500">Loading order items for return...</p>
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 dark:border-night-700 border-t-brand-600"></div>
+        <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Loading order items for return...</p>
       </div>
     );
   }
@@ -214,10 +215,10 @@ export const ReturnFormPage: React.FC = () => {
     return (
       <div className="max-w-xl mx-auto px-4 py-16 text-center">
         <AlertCircle className="w-12 h-12 text-slate-400 mx-auto" />
-        <h2 className="mt-4 text-lg font-semibold text-slate-900">
+        <h2 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
           No Order Selected
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Please select an order from your order list to initiate a return.
         </p>
         <Link
@@ -233,22 +234,22 @@ export const ReturnFormPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Back button */}
-      <div className="flex items-center gap-3 pb-6 border-b border-slate-200">
+      <div className="flex items-center gap-3 pb-6 border-b border-slate-200 dark:border-night-700">
         <Link
           to={`/orders/${order.id}`}
           data-testid="back-to-order-btn"
-          className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+          className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-night-750 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
           <h1
             data-testid="return-form-title"
-            className="text-2xl font-bold tracking-tight text-slate-900"
+            className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100"
           >
             Submit Return Request
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Order #{order.id} • Select items, reason, and preview your calculated refund
           </p>
         </div>
@@ -257,7 +258,7 @@ export const ReturnFormPage: React.FC = () => {
       {submitError && (
         <div
           data-testid="return-form-error"
-          className="my-6 p-4 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-sm text-rose-700"
+          className="my-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 flex items-start gap-3 text-sm text-rose-700 dark:text-rose-300"
         >
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <div>
@@ -271,17 +272,17 @@ export const ReturnFormPage: React.FC = () => {
         {/* Left 2 Cols: Form Inputs */}
         <div className="lg:col-span-2 space-y-6">
           {/* Step 1: Select Items */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
+          <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-night-700">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
                 1. Select Items to Return
               </h2>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-500 dark:text-slate-400">
                 {selectedItems.length} of {order.items.length} selected
               </span>
             </div>
 
-            <div className="mt-4 divide-y divide-slate-100">
+            <div className="mt-4 divide-y divide-slate-100 dark:divide-night-700">
               {order.items.map((item) => {
                 const selected = selectedItems.find(
                   (si) => si.orderItemId === item.id
@@ -294,7 +295,7 @@ export const ReturnFormPage: React.FC = () => {
                     key={item.id}
                     data-testid={`return-item-select-row-${item.id}`}
                     className={`py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
-                      !isEligible ? 'opacity-50 bg-slate-50/50' : ''
+                      !isEligible ? 'opacity-50 bg-slate-50/50 dark:bg-night-900/50' : ''
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -305,22 +306,23 @@ export const ReturnFormPage: React.FC = () => {
                         disabled={!isEligible}
                         checked={!!selected}
                         onChange={() => handleItemToggle(item)}
-                        className="mt-1 h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500 disabled:cursor-not-allowed"
+                        className="mt-1 h-4 w-4 text-brand-600 dark:text-brand-400 rounded border-slate-300 dark:border-night-600 focus:ring-brand-500 disabled:cursor-not-allowed"
                       />
+                      <ProductImage product={item.product} size="sm" />
                       <div>
                         <label
                           htmlFor={`item-${item.id}`}
                           className={`text-sm font-semibold ${
-                            isEligible ? 'text-slate-900 cursor-pointer' : 'text-slate-500'
+                            isEligible ? 'text-slate-900 dark:text-slate-100 cursor-pointer' : 'text-slate-500 dark:text-slate-400'
                           }`}
                         >
                           {item.product.name}
                         </label>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           {formatCents(item.unitPriceCents)} each • {item.product.category}
                         </p>
                         {!isEligible && (
-                          <p className="text-[11px] text-rose-600 mt-1 font-medium">
+                          <p className="text-[11px] text-rose-600 dark:text-rose-400 mt-1 font-medium">
                             {item.ineligibilityReason || 'Ineligible for return'}
                           </p>
                         )}
@@ -331,7 +333,7 @@ export const ReturnFormPage: React.FC = () => {
                       <div className="flex items-center gap-3 pl-7 sm:pl-0">
                         <label
                           htmlFor={`qty-${item.id}`}
-                          className="text-xs text-slate-600"
+                          className="text-xs text-slate-600 dark:text-slate-300"
                         >
                           Quantity:
                         </label>
@@ -345,7 +347,7 @@ export const ReturnFormPage: React.FC = () => {
                               parseInt(e.target.value, 10)
                             )
                           }
-                          className="border border-slate-300 rounded-lg text-xs py-1 px-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                          className="border border-slate-300 dark:border-night-600 rounded-lg text-xs dark:text-slate-100 py-1 px-2.5 bg-white dark:bg-night-750 focus:outline-none focus:ring-2 focus:ring-brand-500"
                         >
                           {Array.from({ length: maxQty }, (_, i) => i + 1).map(
                             (num) => (
@@ -364,9 +366,9 @@ export const ReturnFormPage: React.FC = () => {
           </div>
 
           {/* Step 2: Reason & Details */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-            <div className="pb-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
+          <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm p-6 space-y-4">
+            <div className="pb-4 border-b border-slate-100 dark:border-night-700">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
                 2. Return Reason & Comments
               </h2>
             </div>
@@ -374,7 +376,7 @@ export const ReturnFormPage: React.FC = () => {
             <div>
               <label
                 htmlFor="reason"
-                className="block text-xs font-semibold text-slate-700 uppercase"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase"
               >
                 Reason for Return *
               </label>
@@ -383,7 +385,7 @@ export const ReturnFormPage: React.FC = () => {
                 data-testid="return-reason-select"
                 value={reason}
                 onChange={(e) => setReason(e.target.value as ReturnReason)}
-                className="mt-1.5 block w-full border border-slate-300 rounded-lg py-2 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="mt-1.5 block w-full border border-slate-300 dark:border-night-600 rounded-lg py-2 px-3 text-sm dark:text-slate-100 bg-white dark:bg-night-750 focus:outline-none focus:ring-2 focus:ring-brand-500"
               >
                 <option value="DEFECTIVE">Defective / Not Functioning (Seller Fault)</option>
                 <option value="DAMAGED_IN_TRANSIT">Damaged In Transit (Seller Fault)</option>
@@ -398,15 +400,15 @@ export const ReturnFormPage: React.FC = () => {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="comment"
-                  className="block text-xs font-semibold text-slate-700 uppercase"
+                  className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase"
                 >
-                  Comment / Explanation {reason === 'OTHER' && <span className="text-rose-500">*</span>}
+                  Comment / Explanation {reason === 'OTHER' && <span className="text-rose-500 dark:text-rose-400">*</span>}
                 </label>
                 <span
                   data-testid="comment-char-count"
                   className={`text-xs ${
                     reason === 'OTHER' && comment.trim().length < 10
-                      ? 'text-rose-600 font-semibold'
+                      ? 'text-rose-600 dark:text-rose-400 font-semibold'
                       : 'text-slate-400'
                   }`}
                 >
@@ -424,27 +426,27 @@ export const ReturnFormPage: React.FC = () => {
                     ? 'Please provide a detailed explanation of at least 10 characters...'
                     : 'Add any optional details or observations...'
                 }
-                className="mt-1.5 block w-full border border-slate-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="mt-1.5 block w-full border border-slate-300 dark:border-night-600 rounded-lg dark:bg-night-750 p-3 text-sm dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
             </div>
           </div>
 
           {/* Step 3: Proof Images Upload */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
+          <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm p-6 space-y-4">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-night-700">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
                 3. Photo Evidence & Proof{' '}
                 {isProofRequired ? (
-                  <span className="text-rose-500 font-bold">* Required</span>
+                  <span className="text-rose-500 dark:text-rose-400 font-bold">* Required</span>
                 ) : (
                   <span className="text-slate-400 font-normal">(Optional)</span>
                 )}
               </h2>
-              <span className="text-xs text-slate-500">{files.length} / 5 max</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{files.length} / 5 max</span>
             </div>
 
             {isProofRequired && (
-              <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-xs text-amber-800 dark:text-amber-200 flex items-center gap-2">
                 <Info className="w-4 h-4 flex-shrink-0" />
                 <span>
                   Returns for {reason.replace(/_/g, ' ')} require at least one clear photo showing the issue.
@@ -453,7 +455,7 @@ export const ReturnFormPage: React.FC = () => {
             )}
 
             {/* Dropzone */}
-            <div className="border-2 border-dashed border-slate-300 hover:border-brand-500 rounded-xl p-6 text-center cursor-pointer bg-slate-50/50 transition-colors relative">
+            <div className="border-2 border-dashed border-slate-300 dark:border-night-600 hover:border-brand-500 dark:hover:border-brand-400 rounded-xl p-6 text-center cursor-pointer bg-slate-50/50 dark:bg-night-900/50 transition-colors relative">
               <input
                 type="file"
                 data-testid="file-upload-input"
@@ -463,10 +465,10 @@ export const ReturnFormPage: React.FC = () => {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
               <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-              <div className="text-sm font-semibold text-slate-900">
+              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 Click to upload proof images
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 JPG, PNG, or WEBP up to 5 MB each (max 5 photos)
               </p>
             </div>
@@ -480,7 +482,7 @@ export const ReturnFormPage: React.FC = () => {
                 {filePreviews.map((previewUrl, idx) => (
                   <div
                     key={idx}
-                    className="relative group rounded-lg overflow-hidden border border-slate-200 aspect-square bg-slate-100"
+                    className="relative group rounded-lg overflow-hidden border border-slate-200 dark:border-night-700 aspect-square bg-slate-100 dark:bg-night-750"
                   >
                     <img
                       src={previewUrl}
@@ -508,14 +510,14 @@ export const ReturnFormPage: React.FC = () => {
 
         {/* Right Col: Live Refund Preview Calculator */}
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sticky top-24">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-emerald-600" />
+          <div className="bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-700 shadow-sm p-6 sticky top-24">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-night-700">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 Live Refund Preview
               </h3>
               {loadingPreview && (
-                <span className="text-[11px] text-brand-600 animate-pulse font-medium">
+                <span className="text-[11px] text-brand-600 dark:text-brand-400 animate-pulse font-medium">
                   Calculating...
                 </span>
               )}
@@ -524,29 +526,29 @@ export const ReturnFormPage: React.FC = () => {
             {previewError ? (
               <div
                 data-testid="preview-error-box"
-                className="mt-4 p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700"
+                className="mt-4 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-lg text-xs text-rose-700 dark:text-rose-300"
               >
                 {previewError}
               </div>
             ) : refundPreview ? (
               <div data-testid="refund-preview-card" className="mt-4 space-y-3">
-                <dl className="space-y-2 text-xs text-slate-600">
+                <dl className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
                   <div className="flex justify-between">
                     <dt>Items Subtotal</dt>
-                    <dd className="font-medium text-slate-900">
+                    <dd className="font-medium text-slate-900 dark:text-slate-100">
                       {formatCents(refundPreview.subtotalItemRefundCents)}
                     </dd>
                   </div>
 
                   <div className="flex justify-between">
                     <dt>Tax Refund</dt>
-                    <dd className="font-medium text-slate-900">
+                    <dd className="font-medium text-slate-900 dark:text-slate-100">
                       +{formatCents(refundPreview.totalTaxRefundCents)}
                     </dd>
                   </div>
 
                   {refundPreview.totalRestockingFeeCents > 0 && (
-                    <div className="flex justify-between text-rose-600">
+                    <div className="flex justify-between text-rose-600 dark:text-rose-400">
                       <dt>Restocking Fee (15%)</dt>
                       <dd className="font-medium">
                         -{formatCents(refundPreview.totalRestockingFeeCents)}
@@ -556,7 +558,7 @@ export const ReturnFormPage: React.FC = () => {
 
                   <div className="flex justify-between">
                     <dt>Shipping Refund</dt>
-                    <dd className="font-medium text-slate-900">
+                    <dd className="font-medium text-slate-900 dark:text-slate-100">
                       {refundPreview.shippingRefundCents > 0
                         ? `+${formatCents(refundPreview.shippingRefundCents)}`
                         : '$0.00'}
@@ -564,16 +566,16 @@ export const ReturnFormPage: React.FC = () => {
                   </div>
 
                   {refundPreview.shippingRefundCents > 0 && (
-                    <div className="p-2 bg-emerald-50 rounded text-[11px] text-emerald-700">
+                    <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded text-[11px] text-emerald-700 dark:text-emerald-300">
                       Full original shipping refunded (entire order return due to seller fault).
                     </div>
                   )}
 
-                  <div className="pt-3 border-t border-slate-100 flex justify-between items-baseline">
-                    <dt className="text-sm font-bold text-slate-900">Total Refund</dt>
+                  <div className="pt-3 border-t border-slate-100 dark:border-night-700 flex justify-between items-baseline">
+                    <dt className="text-sm font-bold text-slate-900 dark:text-slate-100">Total Refund</dt>
                     <dd
                       data-testid="preview-total-refund"
-                      className="text-lg font-bold text-emerald-600"
+                      className="text-lg font-bold text-emerald-600 dark:text-emerald-400"
                     >
                       {formatCents(refundPreview.totalRefundCents)}
                     </dd>
@@ -587,7 +589,7 @@ export const ReturnFormPage: React.FC = () => {
             )}
 
             {/* Submission Action Button */}
-            <div className="mt-6 pt-4 border-t border-slate-100">
+            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-night-700">
               <button
                 type="submit"
                 data-testid="submit-return-btn"

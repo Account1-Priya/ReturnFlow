@@ -49,20 +49,20 @@ export const LoginPage: React.FC = () => {
             <RotateCcw className="w-6 h-6" />
           </div>
         </div>
-        <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
+        <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           Sign in to ReturnFlow
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
+        <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-300">
           Realistic Returns & Refund Management Platform
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-sm border border-slate-200 sm:rounded-xl sm:px-10">
+        <div className="bg-white dark:bg-night-800 py-8 px-6 shadow-sm border border-slate-200 dark:border-night-700 sm:rounded-xl sm:px-10">
           {error && (
             <div
               data-testid="auth-error-message"
-              className="mb-6 p-3 rounded-lg bg-rose-50 border border-rose-200 flex items-start gap-2.5 text-sm text-rose-700"
+              className="mb-6 p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 flex items-start gap-2.5 text-sm text-rose-700 dark:text-rose-300"
             >
               <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <span>{error}</span>
@@ -73,7 +73,7 @@ export const LoginPage: React.FC = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
               >
                 Email Address
               </label>
@@ -89,7 +89,7 @@ export const LoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-night-600 rounded-lg dark:bg-night-750 text-sm dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:focus:border-brand-400"
                 />
               </div>
             </div>
@@ -97,7 +97,7 @@ export const LoginPage: React.FC = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
               >
                 Password
               </label>
@@ -113,7 +113,7 @@ export const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="block w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-night-600 rounded-lg dark:bg-night-750 text-sm dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:focus:border-brand-400"
                 />
               </div>
             </div>
@@ -122,15 +122,15 @@ export const LoginPage: React.FC = () => {
               type="submit"
               data-testid="login-submit-button"
               disabled={loading}
-              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50 transition-colors"
+              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-night-800 focus:ring-brand-500 disabled:opacity-50 transition-colors"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           {/* Quick 1-Click Credentials for Evaluators / Portfolio QA */}
-          <div className="mt-6 border-t border-slate-100 pt-6">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <div className="mt-6 border-t border-slate-100 dark:border-night-700 pt-6">
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
               1-Click Quick Login (Evaluators & Automated Tests):
             </p>
             <div className="grid grid-cols-2 gap-2 text-xs">
@@ -145,10 +145,10 @@ export const LoginPage: React.FC = () => {
                     setError(getApiErrorMessage(err));
                   }
                 }}
-                className="p-2 border border-slate-200 rounded-lg bg-slate-50 hover:bg-indigo-50 hover:border-indigo-200 text-left transition-colors"
+                className="p-2 border border-slate-200 dark:border-night-700 rounded-lg bg-slate-50 dark:bg-night-900 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 hover:border-indigo-200 dark:hover:border-indigo-900/60 text-left transition-colors"
               >
-                <div className="font-semibold text-slate-900">Admin User</div>
-                <div className="text-slate-500 truncate">admin@returnflow.com</div>
+                <div className="font-semibold text-slate-900 dark:text-slate-100">Admin User</div>
+                <div className="text-slate-500 dark:text-slate-400 truncate">admin@returnflow.com</div>
               </button>
               <button
                 type="button"
@@ -161,10 +161,10 @@ export const LoginPage: React.FC = () => {
                     setError(getApiErrorMessage(err));
                   }
                 }}
-                className="p-2 border border-slate-200 rounded-lg bg-slate-50 hover:bg-emerald-50 hover:border-emerald-200 text-left transition-colors"
+                className="p-2 border border-slate-200 dark:border-night-700 rounded-lg bg-slate-50 dark:bg-night-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:border-emerald-200 dark:hover:border-emerald-900/60 text-left transition-colors"
               >
-                <div className="font-semibold text-slate-900">Customer (Alice)</div>
-                <div className="text-slate-500 truncate">alice@example.com</div>
+                <div className="font-semibold text-slate-900 dark:text-slate-100">Customer (Alice)</div>
+                <div className="text-slate-500 dark:text-slate-400 truncate">alice@example.com</div>
               </button>
               <button
                 type="button"
@@ -177,10 +177,10 @@ export const LoginPage: React.FC = () => {
                     setError(getApiErrorMessage(err));
                   }
                 }}
-                className="p-2 border border-slate-200 rounded-lg bg-slate-50 hover:bg-amber-50 hover:border-amber-200 text-left transition-colors"
+                className="p-2 border border-slate-200 dark:border-night-700 rounded-lg bg-slate-50 dark:bg-night-900 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:border-amber-200 dark:hover:border-amber-900/60 text-left transition-colors"
               >
-                <div className="font-semibold text-slate-900">Customer (Bob)</div>
-                <div className="text-slate-500 truncate">bob@example.com</div>
+                <div className="font-semibold text-slate-900 dark:text-slate-100">Customer (Bob)</div>
+                <div className="text-slate-500 dark:text-slate-400 truncate">bob@example.com</div>
               </button>
               <button
                 type="button"
@@ -193,20 +193,20 @@ export const LoginPage: React.FC = () => {
                     setError(getApiErrorMessage(err));
                   }
                 }}
-                className="p-2 border border-slate-200 rounded-lg bg-slate-50 hover:bg-purple-50 hover:border-purple-200 text-left transition-colors"
+                className="p-2 border border-slate-200 dark:border-night-700 rounded-lg bg-slate-50 dark:bg-night-900 hover:bg-purple-50 dark:hover:bg-purple-950/40 hover:border-purple-200 dark:hover:border-purple-900/60 text-left transition-colors"
               >
-                <div className="font-semibold text-slate-900">Customer (Diana)</div>
-                <div className="text-slate-500 truncate">diana@example.com</div>
+                <div className="font-semibold text-slate-900 dark:text-slate-100">Customer (Diana)</div>
+                <div className="text-slate-500 dark:text-slate-400 truncate">diana@example.com</div>
               </button>
             </div>
           </div>
 
-          <div className="mt-6 text-center text-sm text-slate-600">
+          <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
             Don't have an account?{' '}
             <Link
               to="/register"
               data-testid="go-to-register-link"
-              className="font-medium text-brand-600 hover:text-brand-500"
+              className="font-medium text-brand-600 dark:text-brand-400 hover:text-brand-500 dark:hover:text-brand-400"
             >
               Create account
             </Link>
